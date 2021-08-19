@@ -75,15 +75,13 @@ function spinBtnHandler(time: number, interval: number) {
 
   // TODO randomly select colour from array
   let colourIndex: number = 0;
-  colourIndex = Math.floor(Math.random() * 3) + 1
-  console.log('colour index - ', colourIndex)
+  colourIndex = Math.floor(Math.random() * 4)
   selectedColour = coloursArray[colourIndex];
 
 
   // TODO randomly select bodyPart from array
   let bodyPartIndex: number = 0;
-  bodyPartIndex = Math.floor(Math.random() * 3) + 1
-  console.log(bodyPartIndex)
+  bodyPartIndex = Math.floor(Math.random() * 4)
   selectedBodyPart = bodyPartsArray[bodyPartIndex];
 
 
@@ -119,29 +117,31 @@ function stopSpinners() {
 const historyTable: HTMLTableElement = document.getElementById('historyTableBody') as HTMLTableElement
 // TODO add the newly spun result to the history table
 function addToHistory() {
-  // let row = historyTable.insertRow(-1)
-  // let cell = row.insertCell(-1);
-  // cell.innerHTML = "Poo";
+  let newRow = historyTable.insertRow(-1)
+  let numCell = newRow.insertCell(-1);
+  numCell.innerHTML = spinCount.toString();
+  let cCell = newRow.insertCell(-1);
+  cCell.innerHTML = selectedColour;
+  let bCell = newRow.insertCell(-1);
+  bCell.innerHTML = selectedBodyPart;
+
+  let colourEnum: Colours = ColoursHelper.get(selectedColour)
   let bodyPartEnum: BodyParts = BodyPartsHelper.get(selectedBodyPart)
-  let spin: SpinRecord = new SpinRecord(Colours[selectedColour], bodyPartEnum, spinCount)
+  let spin: SpinRecord = new SpinRecord(colourEnum, bodyPartEnum, spinCount)
   spinHistoryArray.push(spin)
-  for (let i=0; i < spinHistoryArray.length; i++) {
-    let spin: SpinRecord = new SpinRecord(Colours[selectedColour], bodyPartEnum, spinCount)
-    spinHistoryArray.push(spin)
-    console.log("test")
-  }
+
 }
 
 const statsButton: HTMLElement = document.getElementById('statsBtn') as HTMLElement;
 statsButton.addEventListener('click', statsBtnHandler);
+const statsResultsDiv: HTMLElement = document.getElementById('statsResults') as HTMLElement;
 function statsBtnHandler() {
   // TODO set the statsResults div innerHTML to the amount and last spun number that the user has chosen
   // eg. Red LeftHand spun 10 times
   //     Red LeftHand last spun at num 23
-  let colourValue = colourSelector.value;
-  let bodyPartValue = colourSelector.value;
 
-  console.log()
+
+  statsResultsDiv.innerHTML = `${colourSelector.value} spun ${spinCount} times`
 }
 
 // TODO returns the amount of times the combination of selected of colour and body part have been spun
