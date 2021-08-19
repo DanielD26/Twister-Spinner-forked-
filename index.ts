@@ -129,7 +129,8 @@ function addToHistory() {
   let bodyPartEnum: BodyParts = BodyPartsHelper.get(selectedBodyPart)
   let spin: SpinRecord = new SpinRecord(colourEnum, bodyPartEnum, spinCount)
   spinHistoryArray.push(spin)
-
+  console.log(spinHistoryArray);
+  console.log(BodyParts[spinHistoryArray[0].bodyPart]);
 }
 
 const statsButton: HTMLElement = document.getElementById('statsBtn') as HTMLElement;
@@ -140,8 +141,11 @@ function statsBtnHandler() {
   // eg. Red LeftHand spun 10 times
   //     Red LeftHand last spun at num 23
 
-
-  statsResultsDiv.innerHTML = `${colourSelector.value} spun ${spinCount} times`
+  for (let i=0; i < spinHistoryArray.length; i++) {
+    console.log(Colours[spinHistoryArray[i].colour])
+  }
+  
+  statsResultsDiv.innerHTML = `${Colours[colourSelector.value]} spun ${spinCount} times`
 }
 
 // TODO returns the amount of times the combination of selected of colour and body part have been spun
