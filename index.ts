@@ -1,6 +1,6 @@
 // Import stylesheets
 import './style.css';
-import { Colours } from './models/colours.enum';
+import { Colours, ColoursHelper } from './models/colours.enum';
 import { BodyParts, BodyPartsHelper } from './models/bodyParts.enum';
 import { SpinRecord } from './models/spin';
 
@@ -34,11 +34,32 @@ for (let colour in Colours) {
   }
 }
 
+// Inserts the values from the colours.enums into the dropdown menu
+const colourSelector: HTMLSelectElement = document.getElementById('colourSelect') as HTMLSelectElement;
+for (let i=0; i < coloursArray.length; i++) {
+  let newOption: HTMLOptionElement = document.createElement('option');
+  newOption.innerHTML = coloursArray[i];
+  newOption.value = i.toString();
+  colourSelector.add(newOption);
+}
+
 const bodyPartP = document.getElementById('bodyPartText');
 
 // TODO see above and create an array of strings to store the bodypart strings from the enum
 let bodyPartsArray: Array<string> = [];
-
+for (let body in BodyParts) {
+  if (isNaN(Number(body))) {
+    bodyPartsArray.push(body);
+  }
+}
+// Inserts the values from the bodyParts.enums into the dropdown menu
+const bodyPartSelector: HTMLSelectElement = document.getElementById('bodyPartSelect') as HTMLSelectElement;
+for (let i=0; i < bodyPartsArray.length; i++) {
+  let newOption: HTMLOptionElement = document.createElement('option');
+  newOption.innerHTML = bodyPartsArray[i];
+  newOption.value = i.toString();
+  bodyPartSelector.add(newOption);
+}
 
 
 // TODO add eventlistners to buttons
@@ -48,17 +69,24 @@ spinBtn.addEventListener('click', () => spinBtnHandler(2000, 100));
 // TODO handles the spin button click
 // time in ms, interval in ms
 function spinBtnHandler(time: number, interval: number) {
-  
+  spinCount++;
   // start spinner rotating through colours
   spinnerCycle = setInterval(() => spinSpinners(), interval);
 
   // TODO randomly select colour from array
   let colourIndex: number = 0;
+  colourIndex = Math.floor(Math.random() * 3) + 1
+  console.log('colour index - ', colourIndex)
   selectedColour = coloursArray[colourIndex];
+
 
   // TODO randomly select bodyPart from array
   let bodyPartIndex: number = 0;
+  bodyPartIndex = Math.floor(Math.random() * 3) + 1
+  console.log(bodyPartIndex)
   selectedBodyPart = bodyPartsArray[bodyPartIndex];
+
+
 
 
   spinBtn.disabled = true;
@@ -76,26 +104,44 @@ function spinSpinners() {
   bodyPartP.innerHTML = bodyPartsArray[spinnerCounter%bodyPartsArray.length];
 }
 
+
 // stops spinner after time parameter, time in ms
 function stopSpinners() {
   clearInterval(spinnerCycle)
   // TODO set colourDiv and bodyPartP to the randomly spun results
-
+  colourDiv.style.backgroundColor = selectedColour.toString();
+  bodyPartP.innerHTML = selectedBodyPart.toString();
 
   spinBtn.disabled = false;
   addToHistory();
 }
 
-
+const historyTable: HTMLTableElement = document.getElementById('historyTableBody') as HTMLTableElement
 // TODO add the newly spun result to the history table
 function addToHistory() {
-  
+  // let row = historyTable.insertRow(-1)
+  // let cell = row.insertCell(-1);
+  // cell.innerHTML = "Poo";
+  let bodyPartEnum: BodyParts = BodyPartsHelper.get(selectedBodyPart)
+  let spin: SpinRecord = new SpinRecord(Colours[selectedColour], bodyPartEnum, spinCount)
+  spinHistoryArray.push(spin)
+  for (let i=0; i < spinHistoryArray.length; i++) {
+    let spin: SpinRecord = new SpinRecord(Colours[selectedColour], bodyPartEnum, spinCount)
+    spinHistoryArray.push(spin)
+    console.log("test")
+  }
 }
 
+const statsButton: HTMLElement = document.getElementById('statsBtn') as HTMLElement;
+statsButton.addEventListener('click', statsBtnHandler);
 function statsBtnHandler() {
   // TODO set the statsResults div innerHTML to the amount and last spun number that the user has chosen
   // eg. Red LeftHand spun 10 times
   //     Red LeftHand last spun at num 23
+  let colourValue = colourSelector.value;
+  let bodyPartValue = colourSelector.value;
+
+  console.log()
 }
 
 // TODO returns the amount of times the combination of selected of colour and body part have been spun
